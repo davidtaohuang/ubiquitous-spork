@@ -153,8 +153,8 @@ typedef struct	s_thread
 # define mapWidth 24
 # define mapHeight 24
 # define PI M_PI
-# define MSPD 0.2
-# define RSPD 3
+# define MSPD 0.1
+# define RSPD 1.5
 
 /*
 **	These macros are all derived and thus really shouldn't be modified.

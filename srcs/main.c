@@ -96,26 +96,20 @@ void	draw(t_mlxdata *d, int side, int i)
 	drawend = (int)((double)lineheight / 2 + WINY / 2);
 	if (drawend >= WINY)
 		drawend = WINY - 1;
-	// ft_printf("WALLX, %d\n", i);
-
 	if (!side)
 		d->wallx = d->raypos.y + d->wall * d->raydir.y;
 	else
 		d->wallx = d->raypos.x + d->wall * d->raydir.x;
 	d->wallx -= (int)d->wallx;
 
-	int texx = (int)(d->wallx * (double)TW);
+	int texx = (int)(d->wallx * (double)d->wtex->w);
 	if ((!side && d->raydir.x > 0) || (side && d->raydir.y < 0))
-		texx = TW - texx - 1;
-
-	// color.c = 0x00FF0000;
-
+		texx = d->wtex->w - texx - 1;
 	j = drawstart;
 	while (j <= drawend)
 	{
-		// int g = j * 256 + (lineheight - WINY) * 128;
-		int texy = (((j * 256 + (lineheight - WINY) * 128) * TH) / lineheight) / 256;
-		color.c = d->wtex->imgd[TW * texy + texx];
+		int texy = (((j * 256 + (lineheight - WINY) * 128) * d->wtex->h) / lineheight) / 256;
+		color.c = d->wtex->imgd[d->wtex->w * texy + texx];
 		if (side)
 			shade(&color, 1, 2);	
 		*(d->imgd + j * WINX + i) = color.c;
@@ -133,30 +127,11 @@ static void	mlxputinfo(t_mlxdata *d)
 	free(str);
 }
 
-#define CCEIL 0x00bebebe
-#define CFLOOR 0x00696969
-
-// void	floorceiling(t_mlxdata *d)
-// {
-// 	int		half;
-// 	int		all;
-// 	int		i;
-
-// 	all = WINX * WINY;
-// 	half = all / 2;
-// 	i = 0;
-// 	while (i < half)
-// 		*(d->imgd + i++) = CCEIL;
-// 	while (i < all)
-// 		*(d->imgd + i++) = CFLOOR;
-// }
-
 void	raycaster(t_mlxdata *d)
 {
 	int		side;
 	int		i;
-	
-	// floorceiling(d);
+
 	i = 0;
 	while (i < WINX)
 	{
@@ -203,43 +178,13 @@ void	collision(t_mlxdata *d, t_vec move, int neg)
 int		ft_redraw(t_mlxdata *d)
 {
 	if (d->updown == 1)
-	{
 		collision(d, d->dir, 0);
-		// if (!(d->wmap[(int)(d->pos.x + d->dir.x * MSPD)][(int)(d->pos.y)]))
-		// 	d->pos.x += d->dir.x * MSPD;
-		// if (!(d->wmap[(int)(d->pos.x)][(int)(d->pos.y + d->dir.y * MSPD)]))
-		// 	d->pos.y += d->dir.y * MSPD;
-	}
 	if (d->updown == 2)
-	{
 		collision(d, d->dir, 1);
-		// if (!(d->wmap[(int)(d->pos.x - d->dir.x * MSPD)][(int)(d->pos.y)]))
-		// 	d->pos.x -= d->dir.x * MSPD;
-		// if (!(d->wmap[(int)(d->pos.x)][(int)(d->pos.y - d->dir.y * MSPD)]))
-		// 	d->pos.y -= d->dir.y * MSPD;
-	}
-	// if (d->pos.x <= 1)
-	// 	d->pos.x += MSPD;
-	// if (d->pos.y <= 1)
-	// 	d->pos.y += MSPD;
-
 	if (d->leftright == 1 && d->shift)
-	{
 		collision(d, d->plane, 0);
-		// if (!(d->wmap[(int)(d->pos.x + d->plane.x * MSPD)][(int)(d->pos.y)]))
-		// 	d->pos.x += d->plane.x * MSPD;
-		// if (!(d->wmap[(int)(d->pos.x)][(int)(d->pos.y + d->plane.y * MSPD)]))
-		// 	d->pos.y += d->plane.y * MSPD;
-	}
 	if (d->leftright == 2 && d->shift)
-	{
 		collision(d, d->plane, 1);
-		// if (!(d->wmap[(int)(d->pos.x - d->plane.x * MSPD)][(int)(d->pos.y)]))
-		// 	d->pos.x -= d->plane.x * MSPD;
-		// if (!(d->wmap[(int)(d->pos.x)][(int)(d->pos.y - d->plane.y * MSPD)]))
-		// 	d->pos.y -= d->plane.y * MSPD;
-	}
-
 	if (d->leftright == 1 && !d->shift)
 		d->angle -= RSPD;
 	if (d->leftright == 2 && !d->shift)
@@ -252,7 +197,6 @@ int		ft_redraw(t_mlxdata *d)
 	d->dir.y = d->odir.x * sin(RA) + d->odir.y * cos(RA);
 	d->plane.x = d->oplane.x * cos(RA) - d->oplane.y * sin(RA);
 	d->plane.y = d->oplane.x * sin(RA) + d->oplane.y * cos(RA);
-
 	if (d->leftright || d->updown)
 	{
 		mlx_clear_window(d->mlx, d->win);

@@ -65,6 +65,13 @@ char	**makemap(int x, int y)
 	return (tmp);
 }
 
+/*
+**	d->dir.y = 0;
+**	d->odir.y = 0;
+**	d->plane.x = 0;
+**	d->oplane.x = 0;
+*/
+
 t_mlxdata	*mlxsetup(t_vec size, t_vec start)
 {
 	t_mlxdata	*d;
@@ -81,12 +88,8 @@ t_mlxdata	*mlxsetup(t_vec size, t_vec start)
 	d->pos.x = start.x;
 	d->pos.y = start.y;
 	d->dir.x = -1;
-	d->dir.y = 0;
 	d->odir.x = -1;
-	d->odir.y = 0;
-	d->plane.x = 0;
 	d->plane.y = 0.66;
-	d->oplane.x = 0;
 	d->oplane.y = 0.66;
 	d->mapsize.x = size.x;
 	d->mapsize.y = size.y;

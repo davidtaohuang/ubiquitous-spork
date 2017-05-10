@@ -48,11 +48,6 @@ void	ft_keyrot(int key, t_mlxdata *d)
 		d->leftright = 1;
 	if (key == 123)
 		d->leftright = 2;
-	// mlx_clear_window(d->mlx, d->win);
-	// mlx_destroy_image(d->mlx, d->img);
-	// d->img = mlx_new_image(d->mlx, WINX, WINY);
-	// d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp), &(d->line), &(d->endian));
-	// raycaster(d);
 }
 
 void	ft_keymove(int key, t_mlxdata *d)
@@ -61,12 +56,6 @@ void	ft_keymove(int key, t_mlxdata *d)
 		d->updown = 1;
 	if (key == 125)
 		d->updown = 2;
-	// ft_printf("posx: %f, posy: %f\n", d->pos.x + d->dir.x * 1, d->pos.x + d->dir.x * 1);
-	// mlx_clear_window(d->mlx, d->win);
-	// mlx_destroy_image(d->mlx, d->img);
-	// d->img = mlx_new_image(d->mlx, WINX, WINY);
-	// d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp), &(d->line), &(d->endian));
-	// raycaster(d);
 }
 
 int		ft_kdown(int key, t_mlxdata *d)

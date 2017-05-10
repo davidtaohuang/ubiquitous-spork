@@ -51,12 +51,13 @@ void	fccalc(t_mlxdata *d, t_vec fwall, int j, int i)
 	weight = cdist / d->wall;
 	cfloor.x = weight * fwall.x + (1.0 - weight) * d->pos.x;
 	cfloor.y = weight * fwall.y + (1.0 - weight) * d->pos.y;
-	tex.x = (int)(cfloor.x * TW) % TW;
-	tex.y = (int)(cfloor.y * TH) % TH;
-	
-	color.c = d->ctex->imgd[TW * (int)tex.y + (int)tex.x];
+	tex.x = (int)(cfloor.x * d->ctex->w) % (int)d->ctex->w;
+	tex.y = (int)(cfloor.y * d->ctex->w) % (int)d->ctex->w;
+	color.c = d->ctex->imgd[(int)d->ctex->w * (int)tex.y + (int)tex.x];
 	*(d->imgd + (WINY - j) * WINX + i) = color.c;
-	color.c = d->ftex->imgd[TW * (int)tex.y + (int)tex.x];
+	tex.x = (int)(cfloor.x * d->ftex->w) % (int)d->ftex->w;
+	tex.y = (int)(cfloor.y * d->ftex->h) % (int)d->ftex->h;
+	color.c = d->ftex->imgd[d->ftex->w * (int)tex.y + (int)tex.x];
 	*(d->imgd + j * WINX + i) = color.c;
 }
 
