@@ -12,34 +12,34 @@
 
 #include "../includes/wolf3d.h"
 
-t_vec	fwallsetup(t_mlxdata *d, int side)
+t_vec	fwallsetup(t_calcs *c, int side)
 {
 	t_vec	fwall;
 
-	if (!side && d->raydir.x > 0)
+	if (!side && c->raydir.x > 0)
 	{
-		fwall.x = d->map.x;
-		fwall.y = d->map.y + d->wallx;
+		fwall.x = c->map.x;
+		fwall.y = c->map.y + c->wallx;
 	}
-	else if (!side && d->raydir.x < 0)
+	else if (!side && c->raydir.x < 0)
 	{
-		fwall.x = d->map.x + 1.0;
-		fwall.y = d->map.y + d->wallx;
+		fwall.x = c->map.x + 1.0;
+		fwall.y = c->map.y + c->wallx;
 	}
-	else if (side && d->raydir.y > 0)
+	else if (side && c->raydir.y > 0)
 	{
-		fwall.x = d->map.x + d->wallx;
-		fwall.y = d->map.y;
+		fwall.x = c->map.x + c->wallx;
+		fwall.y = c->map.y;
 	}
 	else
 	{
-		fwall.x = d->map.x + d->wallx;
-		fwall.y = d->map.y + 1.0;
+		fwall.x = c->map.x + c->wallx;
+		fwall.y = c->map.y + 1.0;
 	}
 	return (fwall);
 }
 
-void	fccalc(t_mlxdata *d, t_vec fwall, int j, int i)
+void	fccalc(t_mlxdata *d, t_calcs *c, int j, int i)
 {
 	double	cdist;
 	double	weight;
@@ -48,9 +48,9 @@ void	fccalc(t_mlxdata *d, t_vec fwall, int j, int i)
 	t_col	color;
 
 	cdist = WINY / ((double)2.0 * j - WINY);
-	weight = cdist / d->wall;
-	cfloor.x = weight * fwall.x + (1.0 - weight) * d->pos.x;
-	cfloor.y = weight * fwall.y + (1.0 - weight) * d->pos.y;
+	weight = cdist / c->wall;
+	cfloor.x = weight * c->fwall.x + (1.0 - weight) * d->pos.x;
+	cfloor.y = weight * c->fwall.y + (1.0 - weight) * d->pos.y;
 	tex.x = (int)(cfloor.x * d->ctex->w) % (int)d->ctex->w;
 	tex.y = (int)(cfloor.y * d->ctex->w) % (int)d->ctex->w;
 	color.c = d->ctex->imgd[(int)d->ctex->w * (int)tex.y + (int)tex.x];
@@ -61,18 +61,17 @@ void	fccalc(t_mlxdata *d, t_vec fwall, int j, int i)
 	*(d->imgd + j * WINX + i) = color.c;
 }
 
-void	drawfc(t_mlxdata *d, int side, int drawend, int i)
+void	drawfc(t_mlxdata *d, t_calcs *c, int drawend, int i)
 {
-	t_vec	fwall;
 	int		j;
 
-	fwall = fwallsetup(d, side);
+	c->fwall = fwallsetup(c, c->wside);
 	if (drawend < 0)
-		drawend = WINY;
+		drawend = WINY - 1;
 	j = drawend + 1;
 	while (j < WINY)
 	{
-		fccalc(d, fwall, j, i);
+		fccalc(d, c, j, i);
 		j++;
 	}
 }

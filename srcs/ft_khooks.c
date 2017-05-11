@@ -42,22 +42,6 @@ int        exit_hook(int key, t_mlxdata *d)
     return (0);
 }
 
-void	ft_keyrot(int key, t_mlxdata *d)
-{
-	if (key == 124)
-		d->right = 1;
-	if (key == 123)
-		d->left = 1;
-}
-
-void	ft_keymove(int key, t_mlxdata *d)
-{
-	if (key == 126)
-		d->up = 1;
-	if (key == 125)
-		d->down = 1;
-}
-
 int		ft_kdown(int key, t_mlxdata *d)
 {
 	ft_printf("Key = %d\n", key);
@@ -66,12 +50,20 @@ int		ft_kdown(int key, t_mlxdata *d)
 		d->info = (!(d->info) ? 1 : 0);
 		ft_mlxredraw(d);
 	}
-	if (key >= 123 && key <= 124)
-		ft_keyrot(key, d);
-	if (key >= 125 && key <= 126)
-		ft_keymove(key, d);
+	if (key == 126 || key == 13)
+		d->up = 1;
+	if (key == 125 || key == 1)
+		d->down = 1;
+	if (key == 124 || key == 2)
+		d->right = 1;
+	if (key == 123 || key == 0)
+		d->left = 1;
 	if (key == 6)
 		d->shift = 1;
+	if (key == 257)
+		d->sprint = 1;
+	if (key == 256 || key == 49)
+		d->walk = 1;
 	if (key == 53)
 		ft_keyexit(d);
 	return (0);
@@ -79,15 +71,19 @@ int		ft_kdown(int key, t_mlxdata *d)
 
 int		ft_kup(int key, t_mlxdata *d)
 {
-	if (key == 126)
+	if (key == 126 || key == 13)
 		d->up = 0;
-	if (key == 125)
+	if (key == 125 || key == 1)
 		d->down = 0;
-	if (key == 123)
-		d->left = 0;
-	if (key == 124)
+	if (key == 124 || key == 2)
 		d->right = 0;
+	if (key == 123 || key == 0)
+		d->left = 0;
 	if (key == 6)
 		d->shift = 0;
+	if (key == 257)
+		d->sprint = 0;
+	if (key == 256 || key == 49)
+		d->walk = 0;
 	return (0);
 }

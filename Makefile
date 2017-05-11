@@ -26,6 +26,7 @@ INCLUDES = -I includes/
 
 SRCFILES = 	main.c \
 			ft_redraw.c \
+			ft_thread.c \
 			clean.c \
 			parsemap.c \
 			ft_khooks.c \
@@ -64,7 +65,7 @@ $(MINILIB):
 $(OBJS): wolf3d.h $(SRCS) | $(OBJDIR)
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
-		@$(CC) $(CFLAGS) $(ASAN) -c $< -o $@
+		@$(CC) $(CFLAGS) -c $< -o $@
 		@echo "Done creating $@..."
 
 $(OBJDIR):
@@ -73,7 +74,7 @@ $(OBJDIR):
 
 $(NAME): $(OBJS) $(LFT) $(LFTPRINTF) $(MINILIB)
 		@echo "Creating $(NAME)..."
-		@$(CC) $(CFLAGS) $(ASAN) $(GFLAGS) $(OBJS) -o $@ -L minilibx_macos/ -lmlx -L libft/ -lft -L ft_printf/ -lftprintf
+		@$(CC) $(CFLAGS) $(GFLAGS) $(OBJS) -o $@ -L minilibx_macos/ -lmlx -L libft/ -lft -L ft_printf/ -lftprintf
 		@echo "All done!"
 
 clean:

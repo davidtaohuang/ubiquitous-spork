@@ -18,9 +18,16 @@
 void	collision(t_mlxdata *d, t_vec move, int neg)
 {
 	t_vec	new;
-
-	new.x = d->pos.x + (neg ? -move.x : move.x) * MSPD;
-	new.y = d->pos.y + (neg ? -move.y : move.y) * MSPD;
+	double	speed;
+	
+	if (d->sprint)
+		speed = SSPD;
+	else if (d->walk)
+		speed = WSPD;
+	else
+		speed = MSPD;
+	new.x = d->pos.x + (neg ? -move.x : move.x) * speed;
+	new.y = d->pos.y + (neg ? -move.y : move.y) * speed;
 	if (new.x < CBUF)
 		new.x = CBUF;
 	if (new.y < CBUF)
@@ -41,7 +48,7 @@ void	ft_mlxredraw(t_mlxdata *d)
 	mlx_destroy_image(d->mlx, d->img);
 	d->img = mlx_new_image(d->mlx, WINX, WINY);
 	d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp), &(d->line), &(d->endian));
-	raycaster(d);
+	threadmanage(d);
 }
 
 int		ft_redraw(t_mlxdata *d)

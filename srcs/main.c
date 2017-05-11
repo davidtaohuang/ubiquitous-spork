@@ -12,59 +12,59 @@
 
 #include "../includes/wolf3d.h"
 
-int		hitcalc(t_mlxdata *d, t_vec step, int hit)
+int		hitcalc(t_mlxdata *d, t_calcs *c, t_vec step, int hit)
 {
 	int		side;
 	
 	while (!hit)
 	{
-		if (d->side.x < d->side.y)
+		if (c->side.x < c->side.y)
 		{
-			d->side.x += d->delta.x;
-			d->map.x += step.x;
+			c->side.x += c->delta.x;
+			c->map.x += step.x;
 			side = 0;
 		}
 		else
 		{
-			d->side.y += d->delta.y;
-			d->map.y += step.y;
+			c->side.y += c->delta.y;
+			c->map.y += step.y;
 			side = 1;
 		}
-		if (d->wmap[(int)d->map.x][(int)d->map.y] > 0)
+		if (d->wmap[(int)c->map.x][(int)c->map.y] > 0)
 			hit = 1;
 	}
 	if (!side)
-		d->wall = (d->map.x - d->raypos.x + (1 - step.x) / 2) / d->raydir.x;
+		c->wall = (c->map.x - c->raypos.x + (1 - step.x) / 2) / c->raydir.x;
 	else
-		d->wall = (d->map.y - d->raypos.y + (1 - step.y) / 2) / d->raydir.y;
+		c->wall = (c->map.y - c->raypos.y + (1 - step.y) / 2) / c->raydir.y;
 	return (side);
 }
 
-int		stepcalc(t_mlxdata *d)
+int		stepcalc(t_mlxdata *d, t_calcs *c)
 {
 	t_vec	step;
 
-	if (d->raydir.x < 0)
+	if (c->raydir.x < 0)
 	{
 		step.x = -1;
-		d->side.x = (d->raypos.x - d->map.x) * d->delta.x;
+		c->side.x = (c->raypos.x - c->map.x) * c->delta.x;
 	}
 	else
 	{
 		step.x = 1;
-		d->side.x = (d->map.x + 1.0 - d->raypos.x) * d->delta.x;
+		c->side.x = (c->map.x + 1.0 - c->raypos.x) * c->delta.x;
 	}
-	if (d->raydir.y < 0)
+	if (c->raydir.y < 0)
 	{
 		step.y = -1;
-		d->side.y = (d->raypos.y - d->map.y) * d->delta.y;
+		c->side.y = (c->raypos.y - c->map.y) * c->delta.y;
 	}
 	else
 	{
 		step.y = 1;
-		d->side.y = (d->map.y + 1.0 - d->raypos.y) * d->delta.y;
+		c->side.y = (c->map.y + 1.0 - c->raypos.y) * c->delta.y;
 	}
-	return (hitcalc(d, step, 0));
+	return (hitcalc(d, c, step, 0));
 }
 
 void	shade(t_col *c, int a, int b)
@@ -78,77 +78,55 @@ void	shade(t_col *c, int a, int b)
 	c->rgb[3] = (unsigned char)(c->rgb[3] * ratio);
 }
 
-void	draw(t_mlxdata *d, int side, int i)
+void	draw(t_mlxdata *d, t_calcs *c, int i)
 {
-	int		lineheight;
-	int 	drawstart;
-	int 	drawend;
-	t_col	color;
 	int		j;
 	
-	lineheight = (int)(WINY / d->wall);
-	drawstart = (int)(-(double)lineheight / 2 + WINY / 2);
-	if (drawstart < 0)
-		drawstart = 0;
-	drawend = (int)((double)lineheight / 2 + WINY / 2);
-	if (drawend >= WINY)
-		drawend = WINY - 1;
-	if (!side)
-		d->wallx = d->raypos.y + d->wall * d->raydir.y;
+	c->lineheight = (int)(WINY / c->wall);
+	c->draw.x = (int)(-(double)c->lineheight / 2 + WINY / 2);
+	if (c->draw.x < 0)
+		c->draw.x = 0;
+	c->draw.y = (int)((double)c->lineheight / 2 + WINY / 2);
+	if (c->draw.y > WINY)
+		c->draw.y = WINY;
+	if (!c->wside)
+		c->wallx = c->raypos.y + c->wall * c->raydir.y;
 	else
-		d->wallx = d->raypos.x + d->wall * d->raydir.x;
-	d->wallx -= (int)d->wallx;
+		c->wallx = c->raypos.x + c->wall * c->raydir.x;
+	c->wallx -= (int)c->wallx;
 
-	int texx = (int)(d->wallx * d->wtex->w);
-	if ((!side && d->raydir.x > 0) || (side && d->raydir.y < 0))
-		texx = d->wtex->w - texx - 1;
-	j = drawstart;
-	while (j <= drawend)
+	c->texhit.x = (int)(c->wallx * d->wtex->w);
+	if ((!c->wside && c->raydir.x > 0) || (c->wside && c->raydir.y < 0))
+		c->texhit.x = d->wtex->w - c->texhit.x - 1;
+	j = c->draw.x;
+	while (j < c->draw.y)
 	{
-		int texy = (((j * 256 + (lineheight - WINY) * 128) * d->wtex->h) / lineheight) / 256;
-		if (texy < d->wtex->h && texy > -1)
-			color.c = d->wtex->imgd[d->wtex->w * texy + texx];
-		if (side)
-			shade(&color, 1, 2);	
-		*(d->imgd + j * WINX + i) = color.c;
+		c->texhit.y = (((j * 256 + (c->lineheight - WINY) * 128) * d->wtex->h) / c->lineheight) / 256;
+		if (c->texhit.y < d->wtex->h && c->texhit.y > -1)
+			c->color.c = d->wtex->imgd[d->wtex->w * c->texhit.y + c->texhit.x];
+		if (c->wside)
+			shade(&c->color, 1, 2);	
+		*(d->imgd + j * WINX + i) = c->color.c;
 		j++;
 	}
-	drawfc(d, side, drawend, i);
+	drawfc(d, c, c->draw.y, i);
 }
 
-static void	mlxputinfo(t_mlxdata *d)
+void	raycaster(t_mlxdata *d, int i)
 {
-	char		*str;
+	t_calcs	c;
 
-	ft_asprintf(&str, "X = %.2f Y = %.2f", d->pos.x, d->pos.y);
-	mlx_string_put(d->mlx, d->win, 0, 0, 0x00FFFFFF, str);
-	free(str);
-}
-
-void	raycaster(t_mlxdata *d)
-{
-	int		side;
-	int		i;
-
-	i = 0;
-	while (i < WINX)
-	{
-		d->camx = 2 * i / (double)WINX - 1;
-		d->raypos.x = d->pos.x;
-		d->raypos.y = d->pos.y;
-		d->raydir.x = d->dir.x + d->plane.x * d->camx;
-		d->raydir.y = d->dir.y + d->plane.y * d->camx;
-		d->map.x = (int)d->raypos.x;
-		d->map.y = (int)d->raypos.y;
-		d->delta.x = sqrt(1 + (d->raydir.y * d->raydir.y) / (d->raydir.x * d->raydir.x));
-		d->delta.y = sqrt(1 + (d->raydir.x * d->raydir.x) / (d->raydir.y * d->raydir.y));
-		side = stepcalc(d);
-		draw(d, side, i);
-		i++;
-	}
-	mlx_put_image_to_window(d->mlx, d->win, d->img, 0, 0);
-	if (d->info)
-		mlxputinfo(d);
+	c.camx = 2 * i / (double)WINX - 1;
+	c.raypos.x = d->pos.x;
+	c.raypos.y = d->pos.y;
+	c.raydir.x = d->dir.x + d->plane.x * c.camx;
+	c.raydir.y = d->dir.y + d->plane.y * c.camx;
+	c.map.x = (int)c.raypos.x;
+	c.map.y = (int)c.raypos.y;
+	c.delta.x = sqrt(1 + (c.raydir.y * c.raydir.y) / (c.raydir.x * c.raydir.x));
+	c.delta.y = sqrt(1 + (c.raydir.x * c.raydir.x) / (c.raydir.y * c.raydir.y));
+	c.wside = stepcalc(d, &c);
+	draw(d, &c, i);
 }
 
 int		main(int ac, char ** av)
@@ -160,7 +138,7 @@ int		main(int ac, char ** av)
 		d = ft_getmap(av[1]);
 		if (d)
 		{
-			raycaster(d);
+			threadmanage(d);
 			mlx_do_key_autorepeatoff(d->mlx);
 			mlx_hook(d->win, 2, 1, ft_kdown, d);
 			mlx_hook(d->win, 3, 1, ft_kup, d);
