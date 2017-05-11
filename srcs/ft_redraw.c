@@ -12,14 +12,11 @@
 
 #include "../includes/wolf3d.h"
 
-#define CBUF 1.1
-#define CBUF2 0.05
-
 void	collision(t_mlxdata *d, t_vec move, int neg)
 {
 	t_vec	new;
 	double	speed;
-	
+
 	if (d->sprint)
 		speed = SSPD;
 	else if (d->walk)
@@ -36,9 +33,11 @@ void	collision(t_mlxdata *d, t_vec move, int neg)
 		new.x = d->mapsize.x - CBUF;
 	if (new.y > d->mapsize.y - CBUF)
 		new.y = d->mapsize.y - CBUF;
-	if (!d->wmap[(int)(new.x - CBUF2)][(int)(d->pos.y)] && !d->wmap[(int)(new.x + CBUF2)][(int)(d->pos.y)])
+	if (!d->wmap[(int)(new.x - CBUF2)][(int)(d->pos.y)] &&
+		!d->wmap[(int)(new.x + CBUF2)][(int)(d->pos.y)])
 		d->pos.x = new.x;
-	if (!d->wmap[(int)(d->pos.x)][(int)(new.y - CBUF2)] && !d->wmap[(int)(d->pos.x)][(int)(new.y + CBUF2)])
+	if (!d->wmap[(int)(d->pos.x)][(int)(new.y - CBUF2)] &&
+		!d->wmap[(int)(d->pos.x)][(int)(new.y + CBUF2)])
 		d->pos.y = new.y;
 }
 
@@ -47,7 +46,8 @@ void	ft_mlxredraw(t_mlxdata *d)
 	mlx_clear_window(d->mlx, d->win);
 	mlx_destroy_image(d->mlx, d->img);
 	d->img = mlx_new_image(d->mlx, WINX, WINY);
-	d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp), &(d->line), &(d->endian));
+	d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp),
+		&(d->line), &(d->endian));
 	threadmanage(d);
 }
 

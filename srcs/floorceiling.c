@@ -54,10 +54,12 @@ void	fccalc(t_mlxdata *d, t_calcs *c, int j, int i)
 	tex.x = (int)(cfloor.x * d->ctex->w) % (int)d->ctex->w;
 	tex.y = (int)(cfloor.y * d->ctex->w) % (int)d->ctex->w;
 	color.c = d->ctex->imgd[(int)d->ctex->w * (int)tex.y + (int)tex.x];
+	shade(&color, 1, 2);
 	*(d->imgd + (WINY - j) * WINX + i) = color.c;
 	tex.x = (int)(cfloor.x * d->ftex->w) % (int)d->ftex->w;
 	tex.y = (int)(cfloor.y * d->ftex->h) % (int)d->ftex->h;
 	color.c = d->ftex->imgd[d->ftex->w * (int)tex.y + (int)tex.x];
+	shade(&color, 1, 2);
 	*(d->imgd + j * WINX + i) = color.c;
 }
 

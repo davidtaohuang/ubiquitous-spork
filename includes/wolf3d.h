@@ -57,7 +57,6 @@ typedef struct	s_calcs
 	double			wallx;
 	int				wside;
 	int				lineheight;
-	// char			**wmap;
 	t_ivec			mapsize;
 	t_vec			pos;
 	t_vec			dir;
@@ -71,46 +70,7 @@ typedef struct	s_calcs
 	t_ivec			draw;
 	t_ivec			texhit;
 	t_col			color;
-	// t_tex			*wtex;
-	// t_tex			*ctex;
-	// t_tex			*ftex;
 }				t_calcs;
-
-// typedef struct	s_mlxdata
-// {
-// 	void			*mlx;
-// 	void			*win;
-// 	void			*img;
-// 	unsigned int	*imgd;
-// 	int				bbp;
-// 	int				endian;
-// 	int				line;
-// 	char			**wmap;
-// 	t_tex			*wtex;
-// 	t_tex			*ctex;
-// 	t_tex			*ftex;
-// 	t_ivec			mapsize;
-// 	t_vec			pos;
-// 	t_vec			odir;
-// 	t_vec			dir;
-// 	t_vec			plane;
-// 	t_vec			oplane;
-// 	t_vec			raypos;
-// 	t_vec			raydir;
-// 	t_vec			map;
-// 	t_vec			side;
-// 	t_vec			delta;
-// 	int				angle;
-// 	double			wall;
-// 	double			wallx;
-// 	double			camx;
-// 	char			shift;
-// 	char			info;
-// 	char			up;
-// 	char			down;
-// 	char			left;
-// 	char			right;
-// }				t_mlxdata;
 
 typedef struct	s_mlxdata
 {
@@ -154,8 +114,6 @@ typedef struct	s_thread
 {
 	int				tid;
 	t_mlxdata		*d;
-	// t_calcs			*c;
-	// void			(*frac)(t_mlxdata*, int);
 }				t_thread;
 
 /*
@@ -192,31 +150,24 @@ typedef struct	s_thread
 **	YO and YR function roughly the same way
 */
 
-// # define WINX 512
-// # define WINY 384
-# define WINX 2000
-# define WINY 1500
+# define WINX 1600
+# define WINY 1200
 # define D2RAD(x) (x * M_PI / 180)
 # define RA (double)D2RAD(d->angle)
-# define THREAD_COUNT 8
-# define CR 0x0000FFFF
-# define CO 0x00FF0000
-# define ENDIAN 0
-# define BBP 32
+# define THREAD_COUNT 16
 
 # define CHUNK WINX / THREAD_COUNT
 
 # define MAPXMAX 256
 # define MAPYMAX 256
-# define TH 64
-# define TW 64
-# define mapWidth 24
-# define mapHeight 24
 # define PI M_PI
 # define MSPD 0.1
 # define WSPD 0.05
 # define SSPD 0.2
 # define RSPD 2
+
+# define CBUF 1.1
+# define CBUF2 0.05
 
 /*
 **	These macros are all derived and thus really shouldn't be modified.
@@ -233,20 +184,20 @@ typedef struct	s_thread
 **		create imgd
 */
 
-# define LINE WINX * BBP / 8
-
 /*
 **	Hook functions
 */
 
 void			threadmanage(t_mlxdata *d);
 
+t_mlxdata		*mlxsetup(t_vec size, t_vec start);
+
 void			raycaster(t_mlxdata *d, int i);
 void			drawfc(t_mlxdata *d, t_calcs *c, int drawend, int i);
 
 int				ft_kup(int key, t_mlxdata *d);
 int				ft_kdown(int key, t_mlxdata *d);
-int       		exit_hook(int key, t_mlxdata *d);
+int				exit_hook(int key, t_mlxdata *d);
 
 void			ft_mlxredraw(t_mlxdata *d);
 int				ft_redraw(t_mlxdata *d);
@@ -267,14 +218,9 @@ void			ft_freetmp(char **tmp);
 void			ft_freemlxdata(t_mlxdata *d);
 void			ft_linecleanup(char **tmp);
 void			ft_cleanall(t_mlxdata *d, char **tmp);
-// int				ft_mmove(int x, int y, t_fmeta *meta);
-// int				ft_mdown(int button, int x, int y, t_fmeta *meta);
-// int				ft_mup(int button, int x, int y, t_fmeta *meta);
 
 /*
 **	Drawing/MLX functions
 */
-
-// void			mlxdraw(t_mlxdata *d);
 
 #endif

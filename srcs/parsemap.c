@@ -12,7 +12,7 @@
 
 #include "../includes/wolf3d.h"
 
-size_t	ft_arrlen(char **s)
+size_t		ft_arrlen(char **s)
 {
 	int	i;
 
@@ -46,56 +46,7 @@ t_vec		ft_getmeta(int fd, int x, int y)
 	return (vec);
 }
 
-char	**makemap(int x, int y)
-{
-	int		i;
-	char	**tmp;
-
-	tmp = (char**)ft_memalloc(sizeof(char*) * y);
-	i = 0;
-	while (i < y)
-	{
-		tmp[i] = ft_strnew(x);
-		i++;
-	}
-	return (tmp);
-}
-
-/*
-**	d->dir.y = 0;
-**	d->odir.y = 0;
-**	d->plane.x = 0;
-**	d->oplane.x = 0;
-**
-**	d->bbp = BBP;
-**	d->line = LINE;
-**	d->endian = ENDIAN;
-*/
-
-t_mlxdata	*mlxsetup(t_vec size, t_vec start)
-{
-	t_mlxdata	*d;
-
-	d = (t_mlxdata*)ft_memalloc(sizeof(t_mlxdata));
-	d->mlx = mlx_init();
-	d->win = mlx_new_window(d->mlx, WINX, WINY, "wolf3d");
-	d->img = mlx_new_image(d->mlx, WINX, WINY);
-	d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp), &(d->line),
-		&(d->endian));
-	d->pos.x = start.x;
-	d->pos.y = start.y;
-	d->dir.x = -1;
-	d->odir.x = -1;
-	d->plane.y = 0.66;
-	d->oplane.y = 0.66;
-	d->mapsize.x = (int)size.x;
-	d->mapsize.y = (int)size.y;
-	d->wmap = makemap((int)size.x, (int)size.y);
-	maketextures(d);
-	return (d);
-}
-
-int		checkmap(t_mlxdata *d)
+int			checkmap(t_mlxdata *d)
 {
 	int		i;
 	int		j;

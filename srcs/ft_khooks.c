@@ -34,22 +34,23 @@ void	ft_keyexit(t_mlxdata *d)
 	exit(1);
 }
 
-int        exit_hook(int key, t_mlxdata *d)
+int		exit_hook(int key, t_mlxdata *d)
 {
-    (void)key;
-    (void)d;
+	(void)key;
+	(void)d;
 	exit(1);
-    return (0);
+	return (0);
 }
 
 int		ft_kdown(int key, t_mlxdata *d)
 {
-	ft_printf("Key = %d\n", key);
 	if (key == 48)
 	{
 		d->info = (!(d->info) ? 1 : 0);
 		ft_mlxredraw(d);
 	}
+	if (d->info)
+		ft_printf("Key = %d\n", key);
 	if (key == 126 || key == 13)
 		d->up = 1;
 	if (key == 125 || key == 1)

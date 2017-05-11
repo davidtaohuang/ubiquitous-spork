@@ -15,7 +15,6 @@
 static void	*raycast(void *arg)
 {
 	t_thread	*data;
-	
 	int			i;
 	int			end;
 

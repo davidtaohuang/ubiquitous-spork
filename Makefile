@@ -25,6 +25,7 @@ GFLAGS = -framework OpenGL -framework AppKit
 INCLUDES = -I includes/
 
 SRCFILES = 	main.c \
+			raycaster.c \
 			ft_redraw.c \
 			ft_thread.c \
 			clean.c \
