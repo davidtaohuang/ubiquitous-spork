@@ -25,6 +25,7 @@ GFLAGS = -framework OpenGL -framework AppKit
 INCLUDES = -I includes/
 
 SRCFILES = 	main.c \
+			ft_redraw.c \
 			clean.c \
 			parsemap.c \
 			ft_khooks.c \
@@ -63,7 +64,7 @@ $(MINILIB):
 $(OBJS): wolf3d.h $(SRCS) | $(OBJDIR)
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
-		@$(CC) $(CFLAGS) -c $< -o $@
+		@$(CC) $(CFLAGS) $(ASAN) -c $< -o $@
 		@echo "Done creating $@..."
 
 $(OBJDIR):

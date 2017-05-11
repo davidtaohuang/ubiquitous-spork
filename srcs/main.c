@@ -12,9 +12,6 @@
 
 #include "../includes/wolf3d.h"
 
-#define mapWidth 24
-#define mapHeight 24
-
 int		hitcalc(t_mlxdata *d, t_vec step, int hit)
 {
 	int		side;
@@ -102,14 +99,15 @@ void	draw(t_mlxdata *d, int side, int i)
 		d->wallx = d->raypos.x + d->wall * d->raydir.x;
 	d->wallx -= (int)d->wallx;
 
-	int texx = (int)(d->wallx * (double)d->wtex->w);
+	int texx = (int)(d->wallx * d->wtex->w);
 	if ((!side && d->raydir.x > 0) || (side && d->raydir.y < 0))
 		texx = d->wtex->w - texx - 1;
 	j = drawstart;
 	while (j <= drawend)
 	{
 		int texy = (((j * 256 + (lineheight - WINY) * 128) * d->wtex->h) / lineheight) / 256;
-		color.c = d->wtex->imgd[d->wtex->w * texy + texx];
+		if (texy < d->wtex->h && texy > -1)
+			color.c = d->wtex->imgd[d->wtex->w * texy + texx];
 		if (side)
 			shade(&color, 1, 2);	
 		*(d->imgd + j * WINX + i) = color.c;
@@ -149,63 +147,8 @@ void	raycaster(t_mlxdata *d)
 		i++;
 	}
 	mlx_put_image_to_window(d->mlx, d->win, d->img, 0, 0);
-	mlxputinfo(d);
-}
-
-#define CBUF 1.1
-#define CBUF2 0.05
-
-void	collision(t_mlxdata *d, t_vec move, int neg)
-{
-	t_vec	new;
-
-	new.x = d->pos.x + (neg ? -move.x : move.x) * MSPD;
-	new.y = d->pos.y + (neg ? -move.y : move.y) * MSPD;
-	if (new.x < CBUF)
-		new.x = CBUF;
-	if (new.y < CBUF)
-		new.y = CBUF;
-	if (new.x > d->mapsize.x - CBUF)
-		new.x = d->mapsize.x - CBUF;
-	if (new.y > d->mapsize.y - CBUF)
-		new.y = d->mapsize.y - CBUF;
-	if (!d->wmap[(int)(new.x - CBUF2)][(int)(d->pos.y)] && !d->wmap[(int)(new.x + CBUF2)][(int)(d->pos.y)])
-		d->pos.x = new.x;
-	if (!d->wmap[(int)(d->pos.x)][(int)(new.y - CBUF2)] && !d->wmap[(int)(d->pos.x)][(int)(new.y + CBUF2)])
-		d->pos.y = new.y;
-}
-
-int		ft_redraw(t_mlxdata *d)
-{
-	if (d->updown == 1)
-		collision(d, d->dir, 0);
-	if (d->updown == 2)
-		collision(d, d->dir, 1);
-	if (d->leftright == 1 && d->shift)
-		collision(d, d->plane, 0);
-	if (d->leftright == 2 && d->shift)
-		collision(d, d->plane, 1);
-	if (d->leftright == 1 && !d->shift)
-		d->angle -= RSPD;
-	if (d->leftright == 2 && !d->shift)
-		d->angle += RSPD;
-	if (d->angle >= 360)
-		d->angle -= 360;
-	if (d->angle < 0)
-		d->angle += 360;
-	d->dir.x = d->odir.x * cos(RA) - d->odir.y * sin(RA);
-	d->dir.y = d->odir.x * sin(RA) + d->odir.y * cos(RA);
-	d->plane.x = d->oplane.x * cos(RA) - d->oplane.y * sin(RA);
-	d->plane.y = d->oplane.x * sin(RA) + d->oplane.y * cos(RA);
-	if (d->leftright || d->updown)
-	{
-		mlx_clear_window(d->mlx, d->win);
-		mlx_destroy_image(d->mlx, d->img);
-		d->img = mlx_new_image(d->mlx, WINX, WINY);
-		d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp), &(d->line), &(d->endian));
-		raycaster(d);
-	}
-	return (1);
+	if (d->info)
+		mlxputinfo(d);
 }
 
 int		main(int ac, char ** av)

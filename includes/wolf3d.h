@@ -27,6 +27,12 @@ typedef union	u_col
 	unsigned char	rgb[4];
 }				t_col;
 
+typedef struct	s_ivec
+{
+	int		x;
+	int		y;
+}				t_ivec;
+
 typedef struct	s_vec
 {
 	double	x;
@@ -44,6 +50,32 @@ typedef struct	s_tex
 	unsigned int	*imgd;
 }				t_tex;
 
+// typedef struct	s_calcs
+// {
+// 	double			camx;
+// 	double			wall;
+// 	double			wallx;
+// 	int				whichside;
+// 	int				lineheight;
+// 	char			**wmap;
+// 	t_ivec			mapsize;
+// 	t_vec			pos;
+// 	t_vec			dir;
+// 	t_vec			plane;
+// 	t_vec			raypos;
+// 	t_vec			raydir;
+// 	t_vec			map;
+// 	t_vec			side;
+// 	t_vec			delta;
+// 	t_vec			fwall;
+// 	t_ivec			draw;
+// 	t_ivec			texhit;
+// 	t_col			color;
+// 	t_tex			*wtex;
+// 	t_tex			*ctex;
+// 	t_tex			*ftex;
+// }				t_calcs;
+
 typedef struct	s_mlxdata
 {
 	void			*mlx;
@@ -57,7 +89,7 @@ typedef struct	s_mlxdata
 	t_tex			*wtex;
 	t_tex			*ctex;
 	t_tex			*ftex;
-	t_vec			mapsize;
+	t_ivec			mapsize;
 	t_vec			pos;
 	t_vec			odir;
 	t_vec			dir;
@@ -73,21 +105,40 @@ typedef struct	s_mlxdata
 	double			wallx;
 	double			camx;
 	char			shift;
-	char			updown;
-	char			leftright;
+	char			info;
+	char			up;
+	char			down;
+	char			left;
+	char			right;
 }				t_mlxdata;
 
-typedef struct	s_meta
-{
-	// char			type;
-	// char			lock;
-	// char			info;
-	// int				mbutton;
-	// int				mdown;
-	// char			**wmap;
-	t_mlxdata		*d;
-	// void			(*frac)(t_mlxdata*, int);
-}				t_meta;
+// typedef struct	s_mlxdata
+// {
+// 	void			*mlx;
+// 	void			*win;
+// 	void			*img;
+// 	unsigned int	*imgd;
+// 	int				bbp;
+// 	int				endian;
+// 	int				line;
+// 	char			**wmap;
+// 	t_tex			*wtex;
+// 	t_tex			*ctex;
+// 	t_tex			*ftex;
+// 	t_ivec			mapsize;
+// 	t_vec			pos;
+// 	t_vec			odir;
+// 	t_vec			dir;
+// 	t_vec			plane;
+// 	t_vec			oplane;
+// 	int				angle;
+// 	char			info;
+// 	char			shift;
+// 	char			up;
+// 	char			down;
+// 	char			left;
+// 	char			right;
+// }				t_mlxdata;
 
 /*
 **	t_thread is a basic struct for multi-threading
@@ -97,12 +148,13 @@ typedef struct	s_meta
 **	3.	frac is the pointer to corresponding fractal calculating function
 */
 
-typedef struct	s_thread
-{
-	int				tid;
-	t_mlxdata		*d;
-	// void			(*frac)(t_mlxdata*, int);
-}				t_thread;
+// typedef struct	s_thread
+// {
+// 	int				tid;
+// 	t_mlxdata		*d;
+// 	t_calcs			*c;
+// 	// void			(*frac)(t_mlxdata*, int);
+// }				t_thread;
 
 /*
 **	The following macros can be modified to change the viewing experience.
@@ -140,28 +192,34 @@ typedef struct	s_thread
 
 # define WINX 512
 # define WINY 384
+// # define WINX 400
+// # define WINY 300
 # define D2RAD(x) (x * M_PI / 180)
 # define RA (double)D2RAD(d->angle)
-# define THREAD_COUNT 16
+# define THREAD_COUNT 1
 # define CR 0x0000FFFF
 # define CO 0x00FF0000
 # define ENDIAN 0
 # define BBP 32
 
+# define CHUNK WINX * WINY / THREAD_COUNT
+
+# define MAPXMAX 256
+# define MAPYMAX 256
 # define TH 64
 # define TW 64
 # define mapWidth 24
 # define mapHeight 24
 # define PI M_PI
 # define MSPD 0.1
-# define RSPD 1.5
+# define RSPD 2
 
 /*
 **	These macros are all derived and thus really shouldn't be modified.
 **
 **	1.	WINX - used to simplify calculations
 **	2.	WINY - used to simplify calculations
-**	3.	CHUNK - specifies how many pixels are calulated and assigend by
+**	3.	CHUNK - specifies how many pixels are calulated and assigned by
 **		each thread
 **	4.	CI - simple color assignment
 **	5.	CS - color smoothing calculation
@@ -177,14 +235,18 @@ typedef struct	s_thread
 **	Hook functions
 */
 
+void			raycaster(t_mlxdata *d);
+void			drawfc(t_mlxdata *d, int side, int drawend, int i);
+
 int				ft_kup(int key, t_mlxdata *d);
 int				ft_kdown(int key, t_mlxdata *d);
 int       		exit_hook(int key, t_mlxdata *d);
-void			raycaster(t_mlxdata *d);
-void			drawfc(t_mlxdata *d, int side, int drawend, int i);
+
+void			ft_mlxredraw(t_mlxdata *d);
+int				ft_redraw(t_mlxdata *d);
+
 void			shade(t_col *c, int a, int b);
 
-void			maketex(t_mlxdata *d, char *str, t_tex **tex);
 void			maketextures(t_mlxdata *d);
 
 int				ft_redraw(t_mlxdata *d);

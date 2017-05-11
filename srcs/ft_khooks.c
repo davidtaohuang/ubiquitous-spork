@@ -45,28 +45,27 @@ int        exit_hook(int key, t_mlxdata *d)
 void	ft_keyrot(int key, t_mlxdata *d)
 {
 	if (key == 124)
-		d->leftright = 1;
+		d->right = 1;
 	if (key == 123)
-		d->leftright = 2;
+		d->left = 1;
 }
 
 void	ft_keymove(int key, t_mlxdata *d)
 {
 	if (key == 126)
-		d->updown = 1;
+		d->up = 1;
 	if (key == 125)
-		d->updown = 2;
+		d->down = 1;
 }
 
 int		ft_kdown(int key, t_mlxdata *d)
 {
 	ft_printf("Key = %d\n", key);
-	// if (key == 48)
-	// {
-	// 	meta->info = (!(meta->info) ? 1 : 0);
-	// 	mlx_clear_window(meta->d->mlx, meta->d->win);
-	// 	mlxdraw(meta);
-	// }
+	if (key == 48)
+	{
+		d->info = (!(d->info) ? 1 : 0);
+		ft_mlxredraw(d);
+	}
 	if (key >= 123 && key <= 124)
 		ft_keyrot(key, d);
 	if (key >= 125 && key <= 126)
@@ -80,10 +79,14 @@ int		ft_kdown(int key, t_mlxdata *d)
 
 int		ft_kup(int key, t_mlxdata *d)
 {
-	if (key == 126 || key == 125)
-		d->updown = 0;
-	if (key == 124 || key == 123)
-		d->leftright = 0;
+	if (key == 126)
+		d->up = 0;
+	if (key == 125)
+		d->down = 0;
+	if (key == 123)
+		d->left = 0;
+	if (key == 124)
+		d->right = 0;
 	if (key == 6)
 		d->shift = 0;
 	return (0);
