@@ -21,11 +21,22 @@
 # include "../ft_printf/includes/ft_printf.h"
 # include "mlx.h"
 
+/*
+**	t_col defines a union that represents a 32-bit color value. This can be
+**	used an unsigned integer or as an unsigned char array of RGB components.
+*/
+
 typedef union	u_col
 {
 	unsigned int	c;
 	unsigned char	rgb[4];
 }				t_col;
+
+/*
+**	t_ivec and t_vec are structs that represent integer and double-precision
+**	floating point vectors. This was primarily to organize variables used in
+**	the raycasting calculations more easily.
+*/
 
 typedef struct	s_ivec
 {
@@ -39,6 +50,18 @@ typedef struct	s_vec
 	double	y;
 }				t_vec;
 
+/*
+**	t_tex is a struct that contains all of the information for each loaded
+**	texture.
+**
+**	1.	h = height in pixels
+**	2.	w = width in pixels
+**	3.	line = stores the byte (bit?) length of one horizontal line of pixels
+**	4.	bbp = bits per pixel
+**	5.	img = MLX image pointer
+**	6.	imgd = MLX image pixel array
+*/
+
 typedef struct	s_tex
 {
 	int				h;
@@ -50,6 +73,11 @@ typedef struct	s_tex
 	unsigned int	*imgd;
 }				t_tex;
 
+/*
+**	t_calcs is an intermediary structure containing all of the variables
+**	necessary for the raycasting calculations.
+*/
+
 typedef struct	s_calcs
 {
 	double			camx;
@@ -58,8 +86,6 @@ typedef struct	s_calcs
 	int				wside;
 	int				lineheight;
 	t_ivec			mapsize;
-	t_vec			pos;
-	t_vec			dir;
 	t_vec			plane;
 	t_vec			raypos;
 	t_vec			raydir;
@@ -71,6 +97,11 @@ typedef struct	s_calcs
 	t_ivec			texhit;
 	t_col			color;
 }				t_calcs;
+
+/*
+**	t_mlxdata is the MLX environment and holds all of the information
+**	tied to the player, his position, and calculating the field of view.
+*/
 
 typedef struct	s_mlxdata
 {
@@ -106,8 +137,7 @@ typedef struct	s_mlxdata
 **	t_thread is a basic struct for multi-threading
 **
 **	1.	tid is the thread id
-**	2.	d is the mlx data that frac needs to do calculations
-**	3.	frac is the pointer to corresponding fractal calculating function
+**	2.	d is the mlx data that each needs to do raycasting calculations
 */
 
 typedef struct	s_thread
@@ -152,28 +182,19 @@ typedef struct	s_thread
 
 # define WINX 1600
 # define WINY 1200
-# define D2RAD(x) (x * M_PI / 180)
-# define RA (double)D2RAD(d->angle)
 # define THREAD_COUNT 16
-
-# define CHUNK WINX / THREAD_COUNT
-
 # define MAPXMAX 256
 # define MAPYMAX 256
-# define PI M_PI
 # define MSPD 0.1
 # define WSPD 0.05
 # define SSPD 0.2
 # define RSPD 2
-
 # define CBUF 1.1
 # define CBUF2 0.05
 
 /*
-**	These macros are all derived and thus really shouldn't be modified.
+**	These macros are derived and thus really shouldn't be modified.
 **
-**	1.	WINX - used to simplify calculations
-**	2.	WINY - used to simplify calculations
 **	3.	CHUNK - specifies how many pixels are calulated and assigned by
 **		each thread
 **	4.	CI - simple color assignment
@@ -184,43 +205,50 @@ typedef struct	s_thread
 **		create imgd
 */
 
+# define CHUNK WINX / THREAD_COUNT
+# define D2RAD(x) (x * M_PI / 180)
+# define RA (double)D2RAD(d->angle)
+# define PI M_PI
+
 /*
 **	Hook functions
 */
-
-void			threadmanage(t_mlxdata *d);
-
-t_mlxdata		*mlxsetup(t_vec size, t_vec start);
-
-void			raycaster(t_mlxdata *d, int i);
-void			drawfc(t_mlxdata *d, t_calcs *c, int drawend, int i);
 
 int				ft_kup(int key, t_mlxdata *d);
 int				ft_kdown(int key, t_mlxdata *d);
 int				exit_hook(int key, t_mlxdata *d);
 
-void			ft_mlxredraw(t_mlxdata *d);
-int				ft_redraw(t_mlxdata *d);
-
-void			shade(t_col *c, int a, int b);
-
-void			maketextures(t_mlxdata *d);
-
-int				ft_redraw(t_mlxdata *d);
+/*
+**	Environment initialization functions (map parsing, etc.)
+*/
 
 t_mlxdata		*ft_getmap(char *file);
+t_mlxdata		*mlxsetup(t_ivec size, t_ivec start);
 
-t_mlxdata		*mlxsetup(t_vec size, t_vec start);
+/*
+**	Drawing management functions
+*/
+
+void			threadmanage(t_mlxdata *d);
+int				ft_redraw(t_mlxdata *d);
+void			ft_mlxredraw(t_mlxdata *d);
+
+/*
+**	Raycasting calculation functions
+*/
+
+void			raycaster(t_mlxdata *d, int i);
+void			drawfc(t_mlxdata *d, t_calcs *c, int drawend, int i);
+void			shade(t_col *c, int a, int b);
+
+/*
+**	Cleanup and error functions
+*/
 
 void			ft_puterror(int code);
-
 void			ft_freetmp(char **tmp);
 void			ft_freemlxdata(t_mlxdata *d);
 void			ft_linecleanup(char **tmp);
 void			ft_cleanall(t_mlxdata *d, char **tmp);
-
-/*
-**	Drawing/MLX functions
-*/
 
 #endif

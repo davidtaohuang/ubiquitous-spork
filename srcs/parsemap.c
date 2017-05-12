@@ -12,7 +12,12 @@
 
 #include "../includes/wolf3d.h"
 
-size_t		ft_arrlen(char **s)
+/*
+**	ft_arrlen is a helper function that counts the number of char pointers in
+**	in the char double-array.
+*/
+
+static size_t	ft_arrlen(char **s)
 {
 	int	i;
 
@@ -25,11 +30,20 @@ size_t		ft_arrlen(char **s)
 	return (i);
 }
 
-t_vec		ft_getmeta(int fd, int x, int y)
+/*
+**	ft_getmeta uses get_next_line to retrieve a metadata line from the map
+**	file. These lines represent either the size of the map or the starting
+**	position of the player in the map. int x and int y are passed in for
+**	error-checking and represent the lower limits for the specific values.
+**	A map has to be at least 3 by 3 and the starting position has to be at
+**	at least (1, 1).
+*/
+
+static t_ivec	ft_getmeta(int fd, int x, int y)
 {
 	char	*line;
 	char	**tmp;
-	t_vec	vec;
+	t_ivec	vec;
 	size_t	len;
 
 	if (!(get_next_line(fd, &line)))
@@ -46,7 +60,16 @@ t_vec		ft_getmeta(int fd, int x, int y)
 	return (vec);
 }
 
-int			checkmap(t_mlxdata *d)
+/*
+**	checkmap verifies the integrity of the map file. It checks to make sure
+**	that the starting position of the player is within the bounds of the
+**	map and also in an empty space. It verifies that the outside edges of the
+**	map are walls and that the only values for spaces in the map are 0-9 (this
+**	full range is not used by the program in its current state but this does
+**	allow for up to nine different wall textures in the future).
+*/
+
+static int		checkmap(t_mlxdata *d)
 {
 	int		i;
 	int		j;
@@ -74,7 +97,13 @@ int			checkmap(t_mlxdata *d)
 	return (0);
 }
 
-void		loadmap(t_mlxdata *d, int fd)
+/*
+**	loadmap transfers the rest of the map file into memory and verifies that
+**	each line matches the width specified by the metadata size and the number
+**	of lines matches the height specified by the metadata size.
+*/
+
+static void		loadmap(t_mlxdata *d, int fd)
 {
 	int		i;
 	int		j;
@@ -102,12 +131,17 @@ void		loadmap(t_mlxdata *d, int fd)
 	}
 }
 
-t_mlxdata	*ft_getmap(char *file)
+/*
+**	ft_getmap opens the file, gets the metadata, initializes the MLX
+**	environment and then loads the rest of the map if it passes validation.
+*/
+
+t_mlxdata		*ft_getmap(char *file)
 {
 	int			fd;
 	t_mlxdata	*d;
-	t_vec		size;
-	t_vec		start;
+	t_ivec		size;
+	t_ivec		start;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)

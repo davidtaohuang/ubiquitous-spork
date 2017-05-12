@@ -12,7 +12,7 @@
 
 #include "../includes/wolf3d.h"
 
-t_vec	fwallsetup(t_calcs *c, int side)
+static t_vec	fwallsetup(t_calcs *c, int side)
 {
 	t_vec	fwall;
 
@@ -39,7 +39,7 @@ t_vec	fwallsetup(t_calcs *c, int side)
 	return (fwall);
 }
 
-void	fccalc(t_mlxdata *d, t_calcs *c, int j, int i)
+static void		fccalc(t_mlxdata *d, t_calcs *c, int j, int i)
 {
 	double	cdist;
 	double	weight;
@@ -63,7 +63,7 @@ void	fccalc(t_mlxdata *d, t_calcs *c, int j, int i)
 	*(d->imgd + j * WINX + i) = color.c;
 }
 
-void	drawfc(t_mlxdata *d, t_calcs *c, int drawend, int i)
+void			drawfc(t_mlxdata *d, t_calcs *c, int drawend, int i)
 {
 	int		j;
 

@@ -12,7 +12,24 @@
 
 #include "../includes/wolf3d.h"
 
-void	collision(t_mlxdata *d, t_vec move, int neg)
+/*
+**	From my understanding of MLX, ft_redraw is called at a set time interval
+**	by mlx_loop_hook. It checks the environemental state variables and updates
+**	values as necessary. If these changes necessitate an update of what is
+**	displayed in the MLX window (XOR of left/right turn/movement or XOR of
+**	forward/backward movement), the current MLX image is destroyed and redrawn.
+**
+**	The collision function detects intersection of the character's position
+**	and wall location based on the pending position changes. The prospective
+**	location is calculated as a function of the current movement speed and
+**	direction. This new location is compared to a buffer value establishing
+**	overall map bounds and then also compared to specific map location (also
+**	buffered) to make sure no intersection with a wall occurs. These checks
+**	are discretized in the x and y components so that successful movement in
+**	one is not dependent on successful movement in the other.
+*/
+
+static void	collision(t_mlxdata *d, t_vec move, int neg)
 {
 	t_vec	new;
 	double	speed;
@@ -41,7 +58,22 @@ void	collision(t_mlxdata *d, t_vec move, int neg)
 		d->pos.y = new.y;
 }
 
-void	ft_mlxredraw(t_mlxdata *d)
+/*
+**	If the info variable inside of the MLX environment is set, then
+**	mlxputinfo displays additional information inside of MLX image window using
+**	mlx_string_put (player location in the world map grid).
+*/
+
+static void	mlxputinfo(t_mlxdata *d)
+{
+	char		*str;
+
+	ft_asprintf(&str, "X = %.2f Y = %.2f", d->pos.x, d->pos.y);
+	mlx_string_put(d->mlx, d->win, 0, 0, 0x00FFFFFF, str);
+	free(str);
+}
+
+void		ft_mlxredraw(t_mlxdata *d)
 {
 	mlx_clear_window(d->mlx, d->win);
 	mlx_destroy_image(d->mlx, d->img);
@@ -49,9 +81,11 @@ void	ft_mlxredraw(t_mlxdata *d)
 	d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp),
 		&(d->line), &(d->endian));
 	threadmanage(d);
+	if (d->info)
+		mlxputinfo(d);
 }
 
-int		ft_redraw(t_mlxdata *d)
+int			ft_redraw(t_mlxdata *d)
 {
 	if (d->up == 1 && !d->down)
 		collision(d, d->dir, 0);

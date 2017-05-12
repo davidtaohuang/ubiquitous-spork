@@ -12,12 +12,17 @@
 
 #include "../includes/wolf3d.h"
 
+/*
+**	These functions output error codes to the console on STD_ERROR and free
+**	allocated memory on program exit.
+*/
+
 void	ft_puterror(int code)
 {
 	if (code == 1)
-		ft_putendl_fd("Usage: ./wolf3d [map]", 2);
+		ft_putendl_fd("Usage: ./wolf3d [map]\n", 2);
 	if (code == 2)
-		ft_putendl_fd("Invalid map file", 2);
+		ft_putendl_fd("Invalid map file\n", 2);
 }
 
 void	ft_freemlxdata(t_mlxdata *d)
@@ -34,6 +39,9 @@ void	ft_freemlxdata(t_mlxdata *d)
 		}
 		ft_memdel((void**)&d->wmap);
 	}
+	mlx_destroy_image(d->mlx, d->wtex->img);
+	mlx_destroy_image(d->mlx, d->ctex->img);
+	mlx_destroy_image(d->mlx, d->ftex->img);
 	ft_memdel((void**)&d->wtex);
 	ft_memdel((void**)&d->ctex);
 	ft_memdel((void**)&d->ftex);

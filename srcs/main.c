@@ -12,6 +12,12 @@
 
 #include "../includes/wolf3d.h"
 
+/*
+**	Main verifies that a map file has been passed as argument and otherwise
+**	outputs the correct usage to STD_ERROR. It then attempts to parse the map
+**	and sets up the MLX environment.
+*/
+
 int		main(int ac, char **av)
 {
 	t_mlxdata	*d;

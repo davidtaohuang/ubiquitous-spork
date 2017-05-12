@@ -13,20 +13,27 @@
 #include "../includes/wolf3d.h"
 
 /*
-**	Key 257 = shift, locks point for julia
-**	Key 53 	= escape, exits program
-**	Key 125	= down arrow, zooms out
-**	Key 126	= up arrow, zooms in
-**	Key 123 = left
-**	Key 124 = right
-**	Key 6	= z, zoom reset
-**	Key 78	= - from numpad, decreases maximum iterations for escape calcs
-**	Key 69	= + from numpad, increases maximum iterations for escape calcs
-**	Key 27	= alphanumeric -, decreases maximum iterations for escape calcs
-**	Key 24	= alphanumeric +, increases maximum iterations for escape calcs
+**	Key 53 	= escape, triggers freeing of memory and exits program
+**
+**	Key 126	= up arrow, moves forwards
+**	Key 125	= down arrow, moves backwards
+**	Key 123 = left, turns to the left
+**	Key 124 = right, turns to the right
+**
+**	Key 13	= w, moves forwards
+**	Key 1	= s, moves forwards
+**	Key 2	= d, turns to the right
+**	Key 0	= a, turns to the left
+**
+**	Key 257 = shift, hold to sprint (increased movement speed)
+**	Key 256 = left control, hold to walk (decreased movement speed)
+**	Key 49	= spacebar, hold to walk (decreased movement speed)
+**	Key 6	= z, hold to strafe left or right (in combination with the keys)
+**	Key 48	= tab, toggles display of map location in mlx window and key debug
+**			  info in the terminal window
 */
 
-void	ft_keyexit(t_mlxdata *d)
+static void	ft_keyexit(t_mlxdata *d)
 {
 	mlx_destroy_image(d->mlx, d->img);
 	mlx_destroy_window(d->mlx, d->win);
@@ -34,7 +41,7 @@ void	ft_keyexit(t_mlxdata *d)
 	exit(1);
 }
 
-int		exit_hook(int key, t_mlxdata *d)
+int			exit_hook(int key, t_mlxdata *d)
 {
 	(void)key;
 	(void)d;
@@ -42,7 +49,7 @@ int		exit_hook(int key, t_mlxdata *d)
 	return (0);
 }
 
-int		ft_kdown(int key, t_mlxdata *d)
+int			ft_kdown(int key, t_mlxdata *d)
 {
 	if (key == 48)
 	{
@@ -70,7 +77,7 @@ int		ft_kdown(int key, t_mlxdata *d)
 	return (0);
 }
 
-int		ft_kup(int key, t_mlxdata *d)
+int			ft_kup(int key, t_mlxdata *d)
 {
 	if (key == 126 || key == 13)
 		d->up = 0;

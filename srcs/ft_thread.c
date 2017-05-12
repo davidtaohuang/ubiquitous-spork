@@ -12,6 +12,15 @@
 
 #include "../includes/wolf3d.h"
 
+/*
+**	These functions direct the threads that calculate vertical bands of the
+**	MLX image window.
+**
+**	Bands are assigned based on the thread id and width of the image window,
+**	thus it is imperative that the width of the image window in pixels (WINX)
+**	is evenly divisible by THREAD_COUNT.
+*/
+
 static void	*raycast(void *arg)
 {
 	t_thread	*data;
@@ -24,15 +33,6 @@ static void	*raycast(void *arg)
 	while (i < end)
 		raycaster(data->d, i++);
 	pthread_exit(NULL);
-}
-
-static void	mlxputinfo(t_mlxdata *d)
-{
-	char		*str;
-
-	ft_asprintf(&str, "X = %.2f Y = %.2f", d->pos.x, d->pos.y);
-	mlx_string_put(d->mlx, d->win, 0, 0, 0x00FFFFFF, str);
-	free(str);
 }
 
 void		threadmanage(t_mlxdata *d)
@@ -53,6 +53,4 @@ void		threadmanage(t_mlxdata *d)
 	while (i < THREAD_COUNT)
 		pthread_join(thr[i++], NULL);
 	mlx_put_image_to_window(d->mlx, d->win, d->img, 0, 0);
-	if (d->info)
-		mlxputinfo(d);
 }

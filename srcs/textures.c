@@ -12,6 +12,11 @@
 
 #include "../includes/wolf3d.h"
 
+/*
+**	Shade is shading funciton that modifies the RGB values associated with the
+**	color stored in a struct of type t_col.
+*/
+
 void		shade(t_col *c, int a, int b)
 {
 	double	ratio;
@@ -23,7 +28,12 @@ void		shade(t_col *c, int a, int b)
 	c->rgb[3] = (unsigned char)(c->rgb[3] * ratio);
 }
 
-void		maketex(t_mlxdata *d, char *str, t_tex **tex)
+/*
+**	maketex allocates memory for a t_tex struct and then uses to
+**	mlx_xpm_file_to_image function to load a texture into memory;
+*/
+
+static void	maketex(t_mlxdata *d, char *str, t_tex **tex)
 {
 	t_tex	*tmp;
 
@@ -34,14 +44,22 @@ void		maketex(t_mlxdata *d, char *str, t_tex **tex)
 	*tex = tmp;
 }
 
-void		maketextures(t_mlxdata *d)
+/*
+**	maketextures loads specific textures.
+*/
+
+static void	maketextures(t_mlxdata *d)
 {
 	maketex(d, "textures/sea_lantern.xpm", &d->ftex);
 	maketex(d, "textures/ice.xpm", &d->ctex);
 	maketex(d, "textures/obsidian.xpm", &d->wtex);
 }
 
-char		**makemap(int x, int y)
+/*
+**	makemap allocates the memory for the world map.
+*/
+
+static char	**makemap(int x, int y)
 {
 	int		i;
 	char	**tmp;
@@ -57,17 +75,17 @@ char		**makemap(int x, int y)
 }
 
 /*
+**	mlxsetup allocates memory for and initializes the environment struct.
+**	The following lines were removed (since the values should be initialized
+**	to zero) to save lines.
+**
 **	d->dir.y = 0;
 **	d->odir.y = 0;
 **	d->plane.x = 0;
 **	d->oplane.x = 0;
-**
-**	d->bbp = BBP;
-**	d->line = LINE;
-**	d->endian = ENDIAN;
 */
 
-t_mlxdata	*mlxsetup(t_vec size, t_vec start)
+t_mlxdata	*mlxsetup(t_ivec size, t_ivec start)
 {
 	t_mlxdata	*d;
 
@@ -83,9 +101,9 @@ t_mlxdata	*mlxsetup(t_vec size, t_vec start)
 	d->odir.x = -1;
 	d->plane.y = 0.66;
 	d->oplane.y = 0.66;
-	d->mapsize.x = (int)size.x;
-	d->mapsize.y = (int)size.y;
-	d->wmap = makemap((int)size.x, (int)size.y);
+	d->mapsize.x = size.x;
+	d->mapsize.y = size.y;
+	d->wmap = makemap(size.x, size.y);
 	maketextures(d);
 	return (d);
 }
