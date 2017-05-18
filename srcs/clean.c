@@ -20,9 +20,12 @@
 void	ft_puterror(int code)
 {
 	if (code == 1)
-		ft_putendl_fd("Usage: ./wolf3d [map]\n", 2);
+		ft_putendl_fd("Usage: ./wolf3d [map]", 2);
 	if (code == 2)
-		ft_putendl_fd("Invalid map file\n", 2);
+	{
+		ft_putendl_fd("Invalid map file", 2);
+		exit (1);
+	}
 }
 
 void	ft_freemlxdata(t_mlxdata *d)

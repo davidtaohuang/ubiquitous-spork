@@ -12,6 +12,24 @@
 
 #include "../includes/wolf3d.h"
 
+/*
+**	This file includes the portion of the raycasting loop responsible for
+**	drawing drawing ceiling and floor pixels to the screen.
+**
+**	1.	fwall = the exact position of where the vertical stripe where the ray
+**		contacts the wall meets the floor and ceiling based on whether a
+**		horizontal or vertical side is hit by the ray and the direction of
+**		the ray
+**	2.	drawend = the last pixel drawn of the wall; now used as the start of
+**		the floor and ceiling
+**	3.	cdist = current y pixel in screen normalized to range between -1 and 1
+**	4.	weight = current y pixel as proportion of distance between player and
+**		ceiling/floor
+**	5.	cfloor = coordinates of floor/ceiling tile between player and wall
+**	6.	tex = coordinates within the floor/ceiling texture of the specific
+**		floor/ceiling tile
+*/
+
 static t_vec	fwallsetup(t_calcs *c, int side)
 {
 	t_vec	fwall;

@@ -50,11 +50,11 @@ static void	collision(t_mlxdata *d, t_vec move, int neg)
 		new.x = d->mapsize.x - CBUF;
 	if (new.y > d->mapsize.y - CBUF)
 		new.y = d->mapsize.y - CBUF;
-	if (!d->wmap[(int)(new.x - CBUF2)][(int)(d->pos.y)] &&
-		!d->wmap[(int)(new.x + CBUF2)][(int)(d->pos.y)])
+	if (!d->wmap[(int)(d->pos.y)][(int)(new.x - CBUF2)] &&
+		!d->wmap[(int)(d->pos.y)][(int)(new.x + CBUF2)])
 		d->pos.x = new.x;
-	if (!d->wmap[(int)(d->pos.x)][(int)(new.y - CBUF2)] &&
-		!d->wmap[(int)(d->pos.x)][(int)(new.y + CBUF2)])
+	if (!d->wmap[(int)(new.y - CBUF2)][(int)(d->pos.x)] &&
+		!d->wmap[(int)(new.y + CBUF2)][(int)(d->pos.x)])
 		d->pos.y = new.y;
 }
 
@@ -68,8 +68,11 @@ static void	mlxputinfo(t_mlxdata *d)
 {
 	char		*str;
 
-	ft_asprintf(&str, "X = %.2f Y = %.2f", d->pos.x, d->pos.y);
+	ft_asprintf(&str, "Pos. X = %.2f Pos. Y = %.2f", d->pos.x, d->pos.y);
 	mlx_string_put(d->mlx, d->win, 0, 0, 0x00FFFFFF, str);
+	free(str);
+	ft_asprintf(&str, "Dir. X = %.2f Dir. Y = %.2f", d->dir.x, d->dir.y);
+	mlx_string_put(d->mlx, d->win, 0, 20, 0x00FFFFFF, str);
 	free(str);
 }
 

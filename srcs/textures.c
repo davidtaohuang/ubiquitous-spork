@@ -85,7 +85,7 @@ static char	**makemap(int x, int y)
 **	d->oplane.x = 0;
 */
 
-t_mlxdata	*mlxsetup(t_ivec size, t_ivec start)
+t_mlxdata	*mlxsetup(t_vec size, t_vec start)
 {
 	t_mlxdata	*d;
 
@@ -95,8 +95,8 @@ t_mlxdata	*mlxsetup(t_ivec size, t_ivec start)
 	d->img = mlx_new_image(d->mlx, WINX, WINY);
 	d->imgd = (unsigned int*)mlx_get_data_addr(d->img, &(d->bbp), &(d->line),
 		&(d->endian));
-	d->pos.x = start.x;
-	d->pos.y = start.y;
+	d->pos.x = start.x + 0.5;
+	d->pos.y = start.y + 0.5;
 	d->dir.x = -1;
 	d->odir.x = -1;
 	d->plane.y = 0.66;

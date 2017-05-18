@@ -39,11 +39,11 @@ static size_t	ft_arrlen(char **s)
 **	at least (1, 1).
 */
 
-static t_ivec	ft_getmeta(int fd, int x, int y)
+static t_vec	ft_getmeta(int fd, int x, int y)
 {
 	char	*line;
 	char	**tmp;
-	t_ivec	vec;
+	t_vec	vec;
 	size_t	len;
 
 	if (!(get_next_line(fd, &line)))
@@ -140,8 +140,8 @@ t_mlxdata		*ft_getmap(char *file)
 {
 	int			fd;
 	t_mlxdata	*d;
-	t_ivec		size;
-	t_ivec		start;
+	t_vec		size;
+	t_vec		start;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)

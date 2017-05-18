@@ -12,6 +12,43 @@
 
 #include "../includes/wolf3d.h"
 
+/*
+**	This file contains the main raycasting function, starting with raycaster
+**	at the bottom. Raycaster initializes several variables from the
+**	environment and x-index value passed in.
+**
+**	1.	camx = the vertical pixel stripe on the screen normalized to a value
+**		between -1 and 1
+**	2.	raypos = the starting position of the ray, taken from the player's
+**		current coordinates in the world map
+**	3.	raydir = the direction of the ray, calculated from the player's
+**		direction and camx
+**	4.	map = the map square of the ray's starting position
+**	5.	delta = the distance traveled along the ray from one edge of
+**		side of the map square to the other in the x or y dimensions,
+**		calculated using the Pythagorean theorem and the ray's direction
+**	6.	wside = whether a vertical side or horizontal side was first hit
+**		by the ray, 0 for horizontal, 1 for vertical
+**	7.	wall = the perpendicular distance from the the ray position 
+**		(player position) to the wall hit, normalized by the corresponding
+**		ray direction component
+**	8.	lineheight = height of the wall hit in pixels on the screen,
+**		calculated based on height of the window in pixesl and wall
+**	9.	draw = "vector" storing the the start and end pixels for drawing,
+**		calculated from lineheight and the height of the texture
+**	10.	wallx = exact vertical stripe on wall hit by ray, calculated from
+**		the wall, ray direction, and player position
+**	11.	texhit.x = x-coordinate of the texture hit by ray, calculated from
+**		wallx and texture width
+**	12.	texhit.y = y-coordinate of texture to display on screen, calculated
+**		by mapping texture coordinate to portion of lineheight
+**	13.	color = color of the specific texture pixel, which is shaded if
+**		vertical side is hit
+**
+**	After wall texture calculations are finished, ceiling and floor pixels are
+**	assigned in drawfc.
+*/
+
 int		hitcalc(t_mlxdata *d, t_calcs *c, t_vec step, int hit)
 {
 	int		side;
@@ -30,7 +67,7 @@ int		hitcalc(t_mlxdata *d, t_calcs *c, t_vec step, int hit)
 			c->map.y += step.y;
 			side = 1;
 		}
-		if (d->wmap[(int)c->map.x][(int)c->map.y] > 0)
+		if (d->wmap[(int)c->map.y][(int)c->map.x] > 0)
 			hit = 1;
 	}
 	if (!side)

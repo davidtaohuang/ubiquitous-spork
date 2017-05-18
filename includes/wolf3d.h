@@ -223,7 +223,7 @@ int				exit_hook(int key, t_mlxdata *d);
 */
 
 t_mlxdata		*ft_getmap(char *file);
-t_mlxdata		*mlxsetup(t_ivec size, t_ivec start);
+t_mlxdata		*mlxsetup(t_vec size, t_vec start);
 
 /*
 **	Drawing management functions
