@@ -33,6 +33,7 @@ SRCFILES = 	main.c \
 			ft_khooks.c \
 			textures.c \
 			floorceiling.c \
+			getaline.c \
 
 SRCDIR := srcs
 

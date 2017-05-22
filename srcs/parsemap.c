@@ -46,7 +46,7 @@ static t_vec	ft_getmeta(int fd, int x, int y)
 	t_vec	vec;
 	size_t	len;
 
-	if (!(get_next_line(fd, &line)))
+	if (!(getaline(fd, &line)))
 		ft_puterror(2);
 	tmp = ft_strsplit(line, ' ');
 	ft_memdel((void**)&line);
@@ -57,6 +57,7 @@ static t_vec	ft_getmeta(int fd, int x, int y)
 	vec.y = ft_atoi(tmp[1]);
 	if (vec.x < x || vec.y < y)
 		ft_linecleanup(tmp);
+	ft_freetmp(tmp);
 	return (vec);
 }
 
@@ -103,15 +104,13 @@ static int		checkmap(t_mlxdata *d)
 **	of lines matches the height specified by the metadata size.
 */
 
-static void		loadmap(t_mlxdata *d, int fd)
+static void		loadmap(t_mlxdata *d, int fd, int i)
 {
-	int		i;
 	int		j;
 	char	*line;
 	char	**tmp;
 
-	i = 0;
-	while (get_next_line(fd, &line))
+	while (getaline(fd, &line) && i < d->mapsize.y)
 	{
 		tmp = ft_strsplit(line, ' ');
 		ft_memdel((void**)&line);
@@ -124,8 +123,10 @@ static void		loadmap(t_mlxdata *d, int fd)
 		ft_freetmp(tmp);
 		i++;
 	}
-	if (i != (int)d->mapsize.y || checkmap(d))
+	if ((j = getaline(fd, &line)) || i != (int)d->mapsize.y || checkmap(d))
 	{
+		if (j)
+			ft_memdel((void**)&line);
 		ft_freemlxdata(d);
 		ft_puterror(2);
 	}
@@ -151,6 +152,6 @@ t_mlxdata		*ft_getmap(char *file)
 		ft_puterror(2);
 	start = ft_getmeta(fd, 1, 1);
 	d = mlxsetup(size, start);
-	loadmap(d, fd);
+	loadmap(d, fd, 0);
 	return (d);
 }

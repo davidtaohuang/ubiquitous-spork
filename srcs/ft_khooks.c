@@ -35,8 +35,6 @@
 
 static void	ft_keyexit(t_mlxdata *d)
 {
-	mlx_destroy_image(d->mlx, d->img);
-	mlx_destroy_window(d->mlx, d->win);
 	ft_freemlxdata(d);
 	exit(1);
 }

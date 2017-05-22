@@ -15,8 +15,23 @@
 /*
 **	Main verifies that a map file has been passed as argument and otherwise
 **	outputs the correct usage to STD_ERROR. It then attempts to parse the map
-**	and sets up the MLX environment.
+**	and sets up the MLX environment. After the first frame is rendered in the
+**	window, the instructions are put to the screen and loop/hook functions
+**	are started.
 */
+
+void	instructions(void)
+{
+	ft_printf("W or UP ARROW to move forward\n");
+	ft_printf("S or DOWN ARROW to move backwards\n");
+	ft_printf("A or LEFT ARROW to turn to the left\n");
+	ft_printf("D or RIGHT ARROW to turn to the right\n\n");
+	ft_printf("Hold SHIFT to sprint (move faster)\n");
+	ft_printf("Hold LEFT-CONTROL or SPACE to walk (move slower)\n");
+	ft_printf("Hold Z and A/LEFT ARROW or D/RIGHT ARROW to strafe left/right");
+	ft_printf("\n\nPress TAB to display debug info\n");
+	ft_printf("Press ESCAPE to exit the program\n");
+}
 
 int		main(int ac, char **av)
 {
@@ -28,6 +43,7 @@ int		main(int ac, char **av)
 		if (d)
 		{
 			threadmanage(d);
+			instructions();
 			mlx_do_key_autorepeatoff(d->mlx);
 			mlx_hook(d->win, 2, 1, ft_kdown, d);
 			mlx_hook(d->win, 3, 1, ft_kup, d);

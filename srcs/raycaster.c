@@ -29,9 +29,9 @@
 **		calculated using the Pythagorean theorem and the ray's direction
 **	6.	wside = whether a vertical side or horizontal side was first hit
 **		by the ray, 0 for horizontal, 1 for vertical
-**	7.	wall = the perpendicular distance from the the ray position 
+**	7.	wall = the perpendicular distance from the the ray position
 **		(player position) to the wall hit, normalized by the corresponding
-**		ray direction component
+**		ray direction component (how many ray lengths to the wall)
 **	8.	lineheight = height of the wall hit in pixels on the screen,
 **		calculated based on height of the window in pixesl and wall
 **	9.	draw = "vector" storing the the start and end pixels for drawing,
@@ -108,6 +108,7 @@ void	draw(t_mlxdata *d, t_calcs *c, int i)
 {
 	int		j;
 
+	c->wallx -= (int)c->wallx;
 	c->texhit.x = (int)(c->wallx * d->wtex->w);
 	if ((!c->wside && c->raydir.x > 0) || (c->wside && c->raydir.y < 0))
 		c->texhit.x = d->wtex->w - c->texhit.x - 1;
@@ -130,6 +131,7 @@ void	raycaster(t_mlxdata *d, int i)
 {
 	t_calcs	c;
 
+	ft_bzero(&c, sizeof(&c));
 	c.camx = 2 * i / (double)WINX - 1;
 	c.raypos.x = d->pos.x;
 	c.raypos.y = d->pos.y;
@@ -151,6 +153,5 @@ void	raycaster(t_mlxdata *d, int i)
 		c.wallx = c.raypos.y + c.wall * c.raydir.y;
 	else
 		c.wallx = c.raypos.x + c.wall * c.raydir.x;
-	c.wallx -= (int)c.wallx;
 	draw(d, &c, i);
 }

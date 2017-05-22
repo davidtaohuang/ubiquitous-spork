@@ -41,6 +41,8 @@ void		threadmanage(t_mlxdata *d)
 	t_thread	tdata[THREAD_COUNT];
 	int			i;
 
+	ft_bzero(thr, sizeof(thr));
+	ft_bzero(tdata, sizeof(tdata));
 	i = 0;
 	while (i < THREAD_COUNT)
 	{

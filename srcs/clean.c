@@ -24,7 +24,7 @@ void	ft_puterror(int code)
 	if (code == 2)
 	{
 		ft_putendl_fd("Invalid map file", 2);
-		exit (1);
+		exit(1);
 	}
 }
 
@@ -48,6 +48,8 @@ void	ft_freemlxdata(t_mlxdata *d)
 	ft_memdel((void**)&d->wtex);
 	ft_memdel((void**)&d->ctex);
 	ft_memdel((void**)&d->ftex);
+	mlx_destroy_image(d->mlx, d->img);
+	mlx_destroy_window(d->mlx, d->win);
 	ft_memdel((void**)&d);
 }
 
@@ -61,6 +63,7 @@ void	ft_freetmp(char **tmp)
 		ft_memdel((void**)&tmp[i]);
 		i++;
 	}
+	ft_memdel((void**)&tmp[i]);
 	ft_memdel((void**)&tmp);
 }
 
@@ -68,7 +71,6 @@ void	ft_linecleanup(char **tmp)
 {
 	ft_freetmp(tmp);
 	ft_puterror(2);
-	exit(1);
 }
 
 void	ft_cleanall(t_mlxdata *d, char **tmp)

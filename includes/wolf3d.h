@@ -150,59 +150,50 @@ typedef struct	s_thread
 **	The following macros can be modified to change the viewing experience.
 **
 **	1.	THREAD_COUNT - the number of threads created for multi-threading
-**	2.	CSMOOTH - toggles whether the color-smoothing option is used (can
-**		be 0 or 1)
-**	3.	MITER - specifies maximum iterations used in fractal calculations
-**	4.	WIN2X - horizontal size of the image/window in pixels
-**	5.	WIN2Y - vertical size of the image/window in pixels
-**	6.	NTOL - tolerance used in the boundary condition in calculating the
-**		newton fractol
-**	7.	CR - color range
-**	8.	CO - color offset
-**	9.	XO - specifies intial value for x-range, used in conjunction with
-**		XR to specify initial domain (in terms of the complex plane)
-**	10.	XR - specifies initial domain in the complex plane displayed in the
-**		image/window
-**	11.	YO - specifies intial value for y-range, used in conjunction with
-**		YR to specify initial range (in terms of the complex plane)
-**	12.	YR - specifies initial range in the complex plane displayed in the
-**		image/window
-**	13.	ZOOM - constant for zoom calculations
-**	14.	ENDIAN - hardware specific
-**	15. BBP - bits per pixel (you can change this, but mlx might break)
+**	2.	WINX - horizontal size of the graphics window in pixels
+**	3.	WINY - vertical size of the graphics window in pixels
+**	4.	MAPXMAX - maximum horizontal size of the map file
+**	5.	MAPYMAX - maximum vertical size of the map file
+**	6.	MSPD - default movement speed in map units
+**	7.	WSPD - walking speed in map units
+**	8.	SSPD - sprinting speed in map units
+**	9.	RSPD - default rotation speed in degrees
 **
-**	XO, XR, YO, YR example:
-**
-**	XO = -2, XR = 4 for example specifies that the initial domain starts at
-**	-2 and has a range of 4, meaning that the domain is (-2, -2 + 4) =
-**	(-2, 2)
-**
-**	YO and YR function roughly the same way
+**	Modifications to MSPD, WSPD, and SSPD can cause aberrant behavior.
+**	Be careful.
 */
 
+# define THREAD_COUNT 16
 # define WINX 1600
 # define WINY 1200
-# define THREAD_COUNT 16
 # define MAPXMAX 256
 # define MAPYMAX 256
 # define MSPD 0.1
 # define WSPD 0.05
 # define SSPD 0.2
 # define RSPD 2
+
+/*
+**	CBUF and CBUF2 define values used in the collision calculations. CBUF
+**	is used for making sure the player remains inside the boundaries of
+**	the map while CBUF2 is determines how close a player can get to a wall.
+**
+**	These values should not be modified, otherwise collision detection may
+**	fail and cause program crashes.
+*/
+
 # define CBUF 1.1
 # define CBUF2 0.05
 
 /*
-**	These macros are derived and thus really shouldn't be modified.
+**	These macros are derived/integral to the function of program be
+**	and should not be modified under any circumstances.
 **
-**	3.	CHUNK - specifies how many pixels are calulated and assigned by
+**	1.	CHUNK - specifies how many pixels are calulated and assigned by
 **		each thread
-**	4.	CI - simple color assignment
-**	5.	CS - color smoothing calculation
-**	6.	XOFFSET - used to help keep functions within line and column limits
-**	7.	YOFFSET - used to help keep functions within line and column limits
-**	8.	LINE - calculates width of an image in terms of bytes, used to
-**		create imgd
+**	2.	D2RAD - inline function to convert a angle in degrees to radians
+**	3.	RA - the angle of rotation from the original direction in radians
+**	4.	PI - a macro of the pi approximation macro from math.h
 */
 
 # define CHUNK WINX / THREAD_COUNT
@@ -222,6 +213,7 @@ int				exit_hook(int key, t_mlxdata *d);
 **	Environment initialization functions (map parsing, etc.)
 */
 
+int				getaline(const int fd, char **line);
 t_mlxdata		*ft_getmap(char *file);
 t_mlxdata		*mlxsetup(t_vec size, t_vec start);
 
