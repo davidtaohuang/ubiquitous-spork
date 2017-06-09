@@ -26,7 +26,7 @@ static int	ft_read(int fd, char **line)
 
 	buf = ft_strnew(1);
 	i = 0;
-	while (read(fd, buf, 1))
+	while (read(fd, buf, 1) > 0)
 	{
 		i++;
 		*line = ft_strjoinreplace(*line, buf);
