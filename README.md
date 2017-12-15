@@ -1,4 +1,4 @@
-# Wolf3D
+# wolf3D
 A raycasting maze-runner in the style of Wolfenstein 3D, built using C and libmlx (graphics library).
 
 ## Demo
