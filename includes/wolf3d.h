@@ -164,8 +164,8 @@ typedef struct	s_thread
 */
 
 # define THREAD_COUNT 16
-# define WINX 1600
-# define WINY 1200
+# define WINX 800
+# define WINY 600
 # define MAPXMAX 256
 # define MAPYMAX 256
 # define MSPD 0.1
